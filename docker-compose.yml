@@ -1,0 +1,19 @@
+version: '3'
+
+services:
+  web:
+    container_name: cybosium
+    restart: always
+    build: .
+    volumes:
+      - "./:/usr/src/app"
+    ports:
+      - "8000:8000"
+    links:
+      - mongo
+
+  mongo:
+    container_name: cybosium_mongo
+    image: mongo
+    ports:
+      - "27017:27017"
