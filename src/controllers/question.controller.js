@@ -1,5 +1,5 @@
 const mongoose = require("mongoose")
-const questionModel = require("../models/question.model")
+const questionService = require('../services/question.service')
 
 const createQuestion = async (req, res) => {
     const { text } = req.body
@@ -9,7 +9,7 @@ const createQuestion = async (req, res) => {
             message: "Required [text]"
         })
     }
-    const question = await questionModel.create({ text })
+    const question = await questionService.createQuestion(text)
     return res.status(201).json({
         success: true,
         message: "Question Added",
@@ -26,7 +26,7 @@ const getQuestion = async (req, res) => {
         })
     }
 
-    const question = await questionModel.findById(id).exec()
+    const question = await questionService.getQuestionById(id)
     if(!question) {
         return res.status(404).json({
             success: false,
@@ -41,7 +41,7 @@ const getQuestion = async (req, res) => {
 }
 
 const getQuestions = async (req, res) => {
-    const questions = await questionModel.find()
+    const questions = await questionService.getQuestions()
     if(!questions || questions.length == 0) {
         return res.status(404).json({
             success: false,
@@ -71,24 +71,14 @@ const updateQuestion = async (req, res) => {
             message: "Required [text]"
         })
     }
-    const question = await questionModel.findById(id).exec()
+    const question = await questionService.getQuestionById(id)
     if(!question) {
         return res.status(404).json({
             success: false,
             message: "Question Not Found"
         })
     }
-    question.text = text
-    try {
-        await question.save()
-    }
-    catch(err) {
-        return res.status(400).json({
-            success: false,
-            message: "Some Unknown Error",
-            error: err
-        })
-    }
+    await questionService.updateQuestion(question, text)
 
     return res.status(200).json({
         success: true,
@@ -106,7 +96,7 @@ const deleteQuestion = async (req, res) => {
         })
     }
 
-    const question = await questionModel.findByIdAndDelete(id).exec()
+    const question = await questionService.deleteQuestion(id)
     if(!question) {
         return res.status(404).json({
             success: false,

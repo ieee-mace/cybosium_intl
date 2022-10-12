@@ -1,6 +1,4 @@
 const whoami = (req, res) => {
-    console.log(req.user)
-
     const user = {
         id: req.user._id,
         firstname: req.user.firstname,

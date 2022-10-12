@@ -1,14 +1,5 @@
-const jwt = require('jsonwebtoken')
+const userService = require("../services/user.service")
 
-const User = require("../models/user.model")
-
-const generateToken = (user) => {
-    const payload = {
-        id: user._id,
-        email: user.email
-    }
-    return jwt.sign(payload, "some_secret_key")
-}
 
 const register = async (req, res) => {
     // FIELDS VALIDATION
@@ -21,7 +12,7 @@ const register = async (req, res) => {
     }
 
     // EMAIL VALIDATION
-    const user = await User.findOne({ email })
+    const user = await userService.getUserByEmail(email)
     if(user) {
         return res.status(400).json({
             success: false,
@@ -30,19 +21,8 @@ const register = async (req, res) => {
     }
 
     // CREATE NEW USER
-    let newUser
-    try {
-        newUser = new User({ firstname, lastname, email, password })
-        newUser.save()
-    }
-    catch(err) {
-        return res.status(400).json({
-            success: false,
-            error: err
-        })
-    }
-
-    const token = generateToken(newUser)
+    const newUser = await userService.createUser({firstname, lastname, email, password})
+    const token = userService.generateToken(newUser)
 
     res.status(201).json({
         success: true,
@@ -66,7 +46,7 @@ const login = async (req, res) => {
     }
 
     // FIND USER
-    const user = await User.findOne({ email, password })
+    const user = await userService.getUserByLoginCredentials({ email, password })
     if(!user) {
         return res.status(404).json({
             success: false,
@@ -74,7 +54,7 @@ const login = async (req, res) => {
         })
     }
 
-    const token = generateToken(user)
+    const token = await userService.generateToken(user)
     
     res.status(200).json({
         success: true,
