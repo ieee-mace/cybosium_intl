@@ -21,6 +21,7 @@ require("./config/passport.config")
 // ROUTES
 app.use("/api/users", require("./routes/user.router"))
 app.use("/api/auth", require("./routes/auth.router"))
+app.use("/api/questions", require("./routes/question.router"))
 
 // RUN SERVER
 app.listen(PORT, () => {
