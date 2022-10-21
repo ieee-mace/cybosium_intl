@@ -1,19 +1,12 @@
-const userModel = require("../models/user.model")
+const { dbConnect, dbDisconnect } = require("./db");
+const { createUser } = require("../services/user.service")
 
-const API_URL = "http://localhost:8000/api"
+beforeAll(async () => dbConnect());
+afterAll(async () => dbDisconnect());
 
-beforeAll(() => {
-    const user = userModel.create({
-        firstname: "John",
-        lastname: "Doe",
-        email: "johndoe@gmail.com",
-        password: "johndoe"
-    })
-})
-
-test('Fetching Questions', async () => {
-    fetch(`${API_URL}/questions`, {
-        method: "GET",
-
-    })
-})
+describe("Question Tests", () => {
+    let user
+    test("should get all questions", async () => {
+        
+    });
+});
