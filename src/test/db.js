@@ -21,3 +21,12 @@ exports.dbDisconnect = async () => {
   await mongoose.connection.close();
   await mongoServer.stop();
 };
+
+exports.dropCollections = async () => {
+  if (mongoServer) {
+    const collections = await mongoose.connection.db.collections();
+    for (let collection of collections) {
+      await collection.remove();
+    }
+  }
+};

@@ -4,8 +4,8 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "develop": "nodemon src/index.js",
-    "start": "node src/index.js",
+    "develop": "nodemon src/server.js",
+    "start": "node src/server.js",
     "test": "jest"
   },
   "dependencies": {
@@ -19,7 +19,8 @@
   },
   "devDependencies": {
     "jest": "^29.1.2",
+    "mongodb-memory-server": "^8.9.3",
     "nodemon": "^2.0.20",
-    "mongodb-memory-server": "^8.9.3"
+    "supertest": "^6.3.0"
   }
 }

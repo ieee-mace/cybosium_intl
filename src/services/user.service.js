@@ -26,10 +26,15 @@ const createUser = async ({firstname, lastname, email, password}) => {
     return await userModel.create({ firstname, lastname, email, password })
 }
 
+const getUsers = async () => {
+    return await userModel.find({})
+}
+
 module.exports = {
     generateToken,
     getUserByLoginCredentials,
     getUserByEmail,
     getUserById,
-    createUser
+    createUser,
+    getUsers,
 }
