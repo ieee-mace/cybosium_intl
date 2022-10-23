@@ -66,4 +66,56 @@ describe("Survey Tests", () => {
         expect(response.statusCode).toEqual(200)
         expect(response.body).toHaveProperty(["survey"])
     });
+
+    test("PUT /api/surveys/", async () => {
+        // CHECK RESPONSE WITHOUT ADDING A SURVEY
+        let response, data
+        response = await request(app)
+            .put("/api/surveys/")
+            .send({ data })
+            .set("Content-Type", "application/json")
+            .set("Authorization", "Bearer " + generateToken(user))
+
+        expect(response.statusCode).toEqual(400)
+        
+        // CHECK RESPONSE AFTER ADDING A SURVEY
+        await addSurveyResponse({data: JSON.stringify({
+            "1": "hello world",
+            "2": "hey threre"
+        }), user})
+        
+        data = "hello"
+        response = await request(app)
+            .put("/api/surveys/")
+            .send({ data })
+            .set("Content-Type", "application/json")
+            .set("Authorization", "Bearer " + generateToken(user))
+
+        expect(response.statusCode).toEqual(200)
+        expect(response.body).toHaveProperty(["survey"])
+        expect(response.body.survey.data).toBe(data)
+    });
+
+    test("DELETE /api/surveys/", async () => {
+        // CHECK RESPONSE WITHOUT DELETING A SURVEY
+        let response, data
+        response = await request(app)
+            .delete("/api/surveys/")
+            .set("Authorization", "Bearer " + generateToken(user))
+
+        expect(response.statusCode).toEqual(400)
+        
+        // CHECK RESPONSE AFTER DELETING A SURVEY
+        await addSurveyResponse({data: JSON.stringify({
+            "1": "hello world",
+            "2": "hey threre"
+        }), user})
+        
+        data = "hello"
+        response = await request(app)
+            .delete("/api/surveys/")
+            .set("Authorization", "Bearer " + generateToken(user))
+
+        expect(response.statusCode).toEqual(200)
+    });
 });
