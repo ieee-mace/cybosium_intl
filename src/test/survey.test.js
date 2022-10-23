@@ -1,6 +1,6 @@
 const request = require('supertest');
 const { dbConnect, dbDisconnect, dropCollections } = require("./db");
-const { createUser, getUsers, generateToken } = require("../services/user.service")
+const { createUser, generateToken } = require("../services/user.service")
 const app = require("../app");
 const { addSurveyResponse } = require('../services/survey.service');
 
@@ -64,7 +64,6 @@ describe("Survey Tests", () => {
             .set("Authorization", "Bearer " + generateToken(user))
 
         expect(response.statusCode).toEqual(200)
-        expect(response.body).toHaveProperty(["surveys"])
-        expect(response.body.surveys).toHaveLength(1)
+        expect(response.body).toHaveProperty(["survey"])
     });
 });
