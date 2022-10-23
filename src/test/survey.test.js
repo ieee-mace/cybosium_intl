@@ -23,8 +23,8 @@ describe("Survey Tests", () => {
 
     // API TESTS
     test("POST /api/surveys/", async () => {
-        console.log(user)
-        const response = await request(app)
+        // ADD A SURVEY
+        const res1 = await request(app)
             .post("/api/surveys/")
             .send({
                 data: JSON.stringify({
@@ -34,7 +34,22 @@ describe("Survey Tests", () => {
             })
             .set("Content-Type", "application/json")
             .set("Authorization", "Bearer " + generateToken(user))
-        expect(response.statusCode).toEqual(200)
+
+        expect(res1.statusCode).toEqual(200)
+            
+        // SHOULDN'T ADD ANOTHER SURVEY
+        const res2 = await request(app)
+            .post("/api/surveys/")
+            .send({
+                data: JSON.stringify({
+                    "1": "hello world",
+                    "2": "hey threre"
+                })
+            })
+            .set("Content-Type", "application/json")
+            .set("Authorization", "Bearer " + generateToken(user))
+
+        expect(res2.statusCode).toEqual(400)        
     });
 
     test("GET /api/surveys/", async () => {
@@ -47,6 +62,9 @@ describe("Survey Tests", () => {
             .get("/api/surveys/")
             .set("Content-Type", "application/json")
             .set("Authorization", "Bearer " + generateToken(user))
+
         expect(response.statusCode).toEqual(200)
+        expect(response.body).toHaveProperty(["surveys"])
+        expect(response.body.surveys).toHaveLength(1)
     });
 });
