@@ -7,16 +7,24 @@ const app = express()
 
 // MIDDLEWARES
 app.use(cors())
-app.use(bodyParser.json({
-    verify: function(req, res, buf) {
-        let url = req.originalUrl
-        console.log("$$$$$$$$$$$$$$$$$$$")
-        console.log(url)
-        if(url.startsWith("/api/payments/successful-payment-webhook")) {
-            req.rawBody = buf.toString()
-        }
+// app.use(bodyParser.json({
+//     verify: function(req, res, buf) {
+//         let url = req.originalUrl
+//         console.log("$$$$$$$$$$$$$$$$$$$")
+//         console.log(url)
+//         if(url.startsWith("/api/payments/successful-payment-webhook")) {
+//             req.rawBody = buf.toString()
+//         }
+//     }
+// }))
+app.use((req, res, next) => {
+    if (req.originalUrl.startsWith("/api/payments/successful-payment-webhook")) {
+        next();
+    } else {
+        bodyParser.json()(req, res, next);
     }
-}))
+});
+
 app.use(passport.initialize())
 
 require("./config/passport.config")

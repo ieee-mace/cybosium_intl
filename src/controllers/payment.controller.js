@@ -5,18 +5,16 @@ const stripe = require('stripe')(SECRET_KEY)
 
 const successfulPaymentWebHook = async (req, res) => {
     const sig = req.headers['stripe-signature']
-
     let event = null
     try {
-        console.log({body: req.body, sig})
+        // console.log({body: req.body, sig})
         event = stripe.webhooks.constructEvent(req.body, sig, WEBHOOK_SECRET_KEY);
-        stripe.webhooks.constructEvent()
     } catch(err) {
-        console.log(err)
-        return res.status(400).send()
+        console.log(`❌ Error message: ${err.message}`);
+        return res.status(400).send(`Webhook Error: ${err.message}`);
     }
-    console.log("####################")
-    console.log(req.body)
+    // console.log("####################")
+    console.log(event.data.object)
     return res.status(200).send()
 }
 
