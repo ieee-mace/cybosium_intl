@@ -1,6 +1,7 @@
 const mongoose = require("mongoose")
 const eventModel = require("../models/event.model")
 const validator = require('validator').default
+const services = require("../services/event.service")
 
 const createEvent = async (req, res) => {
     const {name, description, price, date, registration_open, mode} = req.body
@@ -25,16 +26,7 @@ const createEvent = async (req, res) => {
         })
     }
 
-    const event = new eventModel({
-        name,
-        description,
-        price,
-        date,
-        registration_open,
-        mode,
-        created_by: req.user._id
-    })
-    await event.save()
+    const event = await services.createEvent({name, description, price, date, registration_open, mode, created_by: req.user._id})
     return res.status(200).json({
         success: true,
         message: "Event created successfully",
@@ -43,9 +35,10 @@ const createEvent = async (req, res) => {
 }
 
 const getAllEvents = async (req, res) => {
-    const events = await eventModel.find({}).populate('created_by')
-    res.status(200).json({
+    const events = await services.getAllEvents()
+    return res.status(200).json({
         success: true,
+        message: "Events fetched successfully",
         events
     })
 }
@@ -61,7 +54,7 @@ const getEventById = async (req, res) => {
     }
 
 
-    let event = await eventModel.findOne({ _id: id }).populate('created_by')
+    let event = await services.getEventById(id)
     if(!event) {
         return res.status(400).json({
             success: false,
@@ -84,7 +77,7 @@ const updateEvent = async (req, res) => {
         })
     }
 
-    let event = await eventModel.findOne({ _id: id })
+    let event = await services.getEventById(id)
     if(!event) {
         return res.status(400).json({
             success: false,
@@ -92,19 +85,13 @@ const updateEvent = async (req, res) => {
         })
     }
     
-    const fields = req.body
-    const allowedFields = ["name", "description", "price", "date", "registration_open", "mode"]
-    
-    for(let key in fields) {
-        if(!allowedFields.includes(key)) {
-            return res.status(400).json({
-                success: false,
-                message: [`Field ${key} not allowed`, `Allowed fields [${allowedFields}]`]
-            })
-        }
-        event[key] = fields[key]
+    event = await services.updateEvent({id, data: req.body})
+    if(!event) {
+        return res.status(400).json({
+            success: false,
+            message: "Allowed fields [name, description, price, date, registration_open, mode]"
+        })
     }
-    event.save()
 
     return res.status(200).json({
         success: true,
@@ -123,7 +110,7 @@ const deleteEvent = async (req, res) => {
         })
     }
 
-    const deleteResponse = await eventModel.deleteOne({ _id: id })
+    const deleteResponse = await services.deleteEvent(id)
     if(deleteResponse.deletedCount == 0) {
         return res.status(400).json({
             success: false,
