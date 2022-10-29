@@ -3,6 +3,10 @@ const WEBHOOK_SECRET_KEY = "whsec_ip8nI7S3etaXW7bk8IHv3SYRNo44O6b1"
 
 const stripe = require('stripe')(SECRET_KEY)
 
+const fulfillOrder = async (session) => {
+    console.log("Fulfilling order", session)
+}
+
 const successfulPaymentWebHook = async (req, res) => {
     const sig = req.headers['stripe-signature']
     let event = null
@@ -13,8 +17,12 @@ const successfulPaymentWebHook = async (req, res) => {
         console.log(`❌ Error message: ${err.message}`);
         return res.status(400).send(`Webhook Error: ${err.message}`);
     }
-    // console.log("####################")
-    console.log(event.data.object)
+    
+    if (event.type === 'checkout.session.completed') {
+        const session = event.data.object;
+        fulfillOrder(session);
+    }
+
     return res.status(200).send()
 }
 
@@ -27,14 +35,16 @@ const createCheckoutSession = async (req, res) => {
                 quantity: 1
             }
         ],
+        client_reference_id: "123456789",
         mode: "payment",
         success_url: "http://localhost:3000/dashboard?success=true",
         cancel_url: "http://localhost:3000/dashboard?canceled=true"
     })
 
+    
+    
     console.log("@@@@@@@@@@@@@@@@")
     console.log(session)
-
     return res.status(200).json({
         success: true,
         url: session.url
