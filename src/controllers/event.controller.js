@@ -36,7 +36,7 @@ const createEvent = async (req, res) => {
 }
 
 const getAllEvents = async (req, res) => {
-    const events = await services.getAllEvents()
+    const events = await services.getAllEventsWithRegistrationStatus(req.user)
     return res.status(200).json({
         success: true,
         message: "Events fetched successfully",

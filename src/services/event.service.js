@@ -25,6 +25,21 @@ const getEventById = async (id) => {
     return await eventModel.findOne({ _id: id }).populate('created_by')
 }
 
+const getAllEventsWithRegistrationStatus = async (user) => {
+    const events = await getAllEvents()
+    console.log("@@@@@@@@@@@@@")
+    console.log(user)
+    const registeredEvents = await getRegisteredEvents(user)
+    const data = events.map(event => {
+        const registered = registeredEvents.find(registeredEvent => registeredEvent.event == event._id)
+        return {
+            ...event._doc,
+            registered: registered ? true : false
+        }
+    })
+    return data
+}
+
 const updateEvent = async ({id, data}) => {
     const allowedFields = ["name", "description", "price", "date", "registration_open", "mode"]
     
@@ -55,7 +70,9 @@ const registerEvent = async ({event, user, payment}) => {
 }
 
 const getRegisteredEvents = async (user) => {
-    return (await registrationModel.find({ user: user._id }).populate('event'))['events']
+    const registrations = await registrationModel.find({ user: user._id }).populate('event')
+    const events = registrations.map(registration => registration.event)
+    return events
 }
 
 
@@ -66,5 +83,6 @@ module.exports = {
     updateEvent,
     deleteEvent,
     registerEvent,
-    getRegisteredEvents
+    getRegisteredEvents,
+    getAllEventsWithRegistrationStatus
 }
