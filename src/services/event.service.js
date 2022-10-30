@@ -1,4 +1,7 @@
+
 const eventModel = require("../models/event.model")
+const registrationModel = require("../models/registration.model");
+
 
 const createEvent = async ({name, description, price, date, registration_open, mode, created_by}) => {
     const event = new eventModel({
@@ -41,10 +44,27 @@ const deleteEvent = async (id) => {
     return await eventModel.deleteOne({ _id: id })
 }
 
+const registerEvent = async ({event, user, payment}) => {
+    const registration = await registrationModel.create({
+        event: event._id,
+        user: user._id,
+        payment: payment._id
+    })
+    registration.save()
+    return registration
+}
+
+const getRegisteredEvents = async (user) => {
+    return (await registrationModel.find({ user: user._id }).populate('event'))['events']
+}
+
+
 module.exports = {
     createEvent,
     getAllEvents,
     getEventById,
     updateEvent,
-    deleteEvent
+    deleteEvent,
+    registerEvent,
+    getRegisteredEvents
 }

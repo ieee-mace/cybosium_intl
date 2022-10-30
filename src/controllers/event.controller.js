@@ -2,6 +2,7 @@ const mongoose = require("mongoose")
 const eventModel = require("../models/event.model")
 const validator = require('validator').default
 const services = require("../services/event.service")
+const paymentServices = require("../services/payment.service")
 
 const createEvent = async (req, res) => {
     const {name, description, price, date, registration_open, mode} = req.body
@@ -124,10 +125,58 @@ const deleteEvent = async (req, res) => {
 }
 
 
+const registerEvent = async (req, res) => {
+    const { id } = req.params
+    if(!mongoose.isValidObjectId(id)) {
+        return res.status(400).json({
+            success: false,
+            message: "Invalid event id"
+        })
+    }
+
+    let event = await services.getEventById(id)
+    if(!event) {
+        return res.status(400).json({
+            success: false,
+            message: "Event not found"
+        })
+    }
+
+    if(event.registration_open === false) {
+        return res.status(400).json({
+            success: false,
+            message: "Registration closed for this event"
+        })
+    }
+
+    const registeredEvents = await services.getRegisteredEvents({ user: req.user })
+    for(let event in registeredEvents) {
+        if(event._id == id) {
+            return res.status(400).json({
+                success: false,
+                message: "Already registered for this event"
+            })
+        }
+    }
+
+    const session = await paymentServices.paymentSession({
+        event, 
+        user: req.user, 
+        price_id: "price_1LwNFQSCUt1T7dp659pVlZyr"
+    })
+
+    return res.status(200).json({
+        success: true,
+        url: session.url
+    })
+}
+
+
 module.exports = {
     createEvent,
     getAllEvents,
     getEventById,
     updateEvent,
-    deleteEvent
+    deleteEvent,
+    registerEvent
 }

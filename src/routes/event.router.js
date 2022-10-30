@@ -11,5 +11,6 @@ router.get("/:id", controller.getEventById)
 router.put("/:id", passport.authenticate('jwt', {session: false}), controller.updateEvent)
 router.delete("/:id", passport.authenticate('jwt', {session: false}), controller.deleteEvent)
 
+router.post("/:id/register", passport.authenticate('jwt', {session: false}), controller.registerEvent)
 
 module.exports = router

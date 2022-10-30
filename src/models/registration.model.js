@@ -1,32 +1,19 @@
-const RegistrationSchema = new Schema({
-    event_id: {
-        type: Schema.Types.ObjectId,
+const mongoose = require("mongoose")
+
+const RegistrationSchema = new mongoose.Schema({
+    event: {
+        type: mongoose.Schema.Types.ObjectId,
         ref: "event",
         required: true
     },
-    user_id: {
-        type: Schema.Types.ObjectId,
+    user: {
+        type: mongoose.Schema.Types.ObjectId,
         ref: "user",
         required: true
     },
-    payment_id: {
-        type: String,
-        required: true
-    },
-    payment_status: {
-        type: String,
-        required: true
-    },
-    payment_amount: {
-        type: Number,
-        required: true
-    },
-    payment_receipt_url: {
-        type: String,
-        required: true
-    },
-    payment_receipt_email: {
-        type: String,
+    payment: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "payment",
         required: true
     }
 })
