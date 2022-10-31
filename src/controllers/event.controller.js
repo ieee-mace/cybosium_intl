@@ -149,9 +149,9 @@ const registerEvent = async (req, res) => {
         })
     }
 
-    const registeredEvents = await services.getRegisteredEvents({ user: req.user })
+    const registeredEvents = await services.getRegisteredEvents(req.user)
     for(let event in registeredEvents) {
-        if(event._id == id) {
+        if(toString(event._id) == toString(id)) {
             return res.status(400).json({
                 success: false,
                 message: "Already registered for this event"

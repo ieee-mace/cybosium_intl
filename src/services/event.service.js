@@ -30,8 +30,9 @@ const getAllEventsWithRegistrationStatus = async (user) => {
     console.log("@@@@@@@@@@@@@")
     console.log(user)
     const registeredEvents = await getRegisteredEvents(user)
+    console.log("@@@@@", registeredEvents)
     const data = events.map(event => {
-        const registered = registeredEvents.find(registeredEvent => registeredEvent.event == event._id)
+        const registered = registeredEvents.find(regEvent => regEvent._id.toString() === event._id.toString())
         return {
             ...event._doc,
             registered: registered ? true : false
