@@ -43,8 +43,8 @@ const successfulPaymentWebHook = async (req, res) => {
 const createCheckoutSession = async (req, res) => {
     const session = await services.getCheckoutSession({ price_id: "price_1LwNFQSCUt1T7dp659pVlZyr" })
     
-    console.log("@@@@@@@@@@@@@@@@")
-    console.log(session)
+    // console.log("@@@@@@@@@@@@@@@@")
+    // console.log(session)
     return res.status(200).json({
         success: true,
         url: session.url

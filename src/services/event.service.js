@@ -27,10 +27,10 @@ const getEventById = async (id) => {
 
 const getAllEventsWithRegistrationStatus = async (user) => {
     const events = await getAllEvents()
-    console.log("@@@@@@@@@@@@@")
-    console.log(user)
+    // console.log("@@@@@@@@@@@@@")
+    // console.log(user)
     const registeredEvents = await getRegisteredEvents(user)
-    console.log("@@@@@", registeredEvents)
+    // console.log("@@@@@", registeredEvents)
     const data = events.map(event => {
         const registered = registeredEvents.find(regEvent => regEvent._id.toString() === event._id.toString())
         return {
