@@ -27,5 +27,17 @@ services:
     hostname: cybosium_nginx
     ports:
       - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/:/etc/nginx/conf.d/:ro
+      - ./certbot/www:/var/www/certbot/:ro
+      - ./certbot/conf/:/etc/nginx/ssl/:ro
     depends_on:
       - web
+
+  certbot:
+    image: certbot/certbot:latest
+    container_name: cybosium_certbot
+    volumes:
+      - ./certbot/www/:/var/www/certbot/:rw
+      - ./certbot/conf/:/etc/letsencrypt/:rw
