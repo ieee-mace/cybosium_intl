@@ -15,8 +15,9 @@ app.use((req, res, next) => {
     }
 });
 
-app.use(passport.initialize())
+require('dotenv').config()
 
+app.use(passport.initialize())
 require("./config/passport.config")
 
 // ROUTES

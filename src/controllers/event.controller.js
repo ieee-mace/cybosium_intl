@@ -5,29 +5,29 @@ const services = require("../services/event.service")
 const paymentServices = require("../services/payment.service")
 
 const createEvent = async (req, res) => {
-    const {name, description, price, date, registration_open, mode} = req.body
-    if(!name || !description || !price || !date || !registration_open || !mode) {
+    const { name, description, price, date, registration_open, mode } = req.body
+    if (!name || !description || !price || !date || !registration_open || !mode) {
         return res.status(400).json({
             success: false,
             message: "Required fields [name, description, price, date, registration_open, mode]"
         })
     }
 
-    if(!validator.isDate(date)) {
+    if (!validator.isDate(date)) {
         return res.status(400).json({
             success: false,
             message: "Invalid date format"
         })
     }
 
-    if(!(mode === "online" || mode === "offline")) {
+    if (!(mode === "online" || mode === "offline")) {
         return res.status(400).json({
             success: false,
             message: "Valid modes [online, offline]"
         })
     }
 
-    const event = await services.createEvent({name, description, price, date, registration_open, mode, created_by: req.user._id})
+    const event = await services.createEvent({ name, description, price, date, registration_open, mode, created_by: req.user._id })
     return res.status(200).json({
         success: true,
         message: "Event created successfully",
@@ -45,9 +45,9 @@ const getAllEvents = async (req, res) => {
 }
 
 const getEventById = async (req, res) => {
-    const {id} = req.params
+    const { id } = req.params
 
-    if(!mongoose.isValidObjectId(id)) {
+    if (!mongoose.isValidObjectId(id)) {
         return res.status(400).json({
             success: false,
             message: "Invalid event id"
@@ -56,7 +56,7 @@ const getEventById = async (req, res) => {
 
 
     let event = await services.getEventById(id)
-    if(!event) {
+    if (!event) {
         return res.status(400).json({
             success: false,
             message: "Event not found"
@@ -70,8 +70,8 @@ const getEventById = async (req, res) => {
 }
 
 const updateEvent = async (req, res) => {
-    const {id} = req.params
-    if(!mongoose.isValidObjectId(id)) {
+    const { id } = req.params
+    if (!mongoose.isValidObjectId(id)) {
         return res.status(400).json({
             success: false,
             message: "Invalid event id"
@@ -79,15 +79,15 @@ const updateEvent = async (req, res) => {
     }
 
     let event = await services.getEventById(id)
-    if(!event) {
+    if (!event) {
         return res.status(400).json({
             success: false,
             message: "Event not found"
         })
     }
-    
-    event = await services.updateEvent({id, data: req.body})
-    if(!event) {
+
+    event = await services.updateEvent({ id, data: req.body })
+    if (!event) {
         return res.status(400).json({
             success: false,
             message: "Allowed fields [name, description, price, date, registration_open, mode]"
@@ -104,7 +104,7 @@ const updateEvent = async (req, res) => {
 
 const deleteEvent = async (req, res) => {
     const { id } = req.params
-    if(!mongoose.isValidObjectId(id)) {
+    if (!mongoose.isValidObjectId(id)) {
         return res.status(400).json({
             success: false,
             message: "Invalid event id"
@@ -112,7 +112,7 @@ const deleteEvent = async (req, res) => {
     }
 
     const deleteResponse = await services.deleteEvent(id)
-    if(deleteResponse.deletedCount == 0) {
+    if (deleteResponse.deletedCount == 0) {
         return res.status(400).json({
             success: false,
             message: "Event not found"
@@ -127,7 +127,7 @@ const deleteEvent = async (req, res) => {
 
 const registerEvent = async (req, res) => {
     const { id } = req.params
-    if(!mongoose.isValidObjectId(id)) {
+    if (!mongoose.isValidObjectId(id)) {
         return res.status(400).json({
             success: false,
             message: "Invalid event id"
@@ -135,14 +135,14 @@ const registerEvent = async (req, res) => {
     }
 
     let event = await services.getEventById(id)
-    if(!event) {
+    if (!event) {
         return res.status(400).json({
             success: false,
             message: "Event not found"
         })
     }
 
-    if(event.registration_open === false) {
+    if (event.registration_open === false) {
         return res.status(400).json({
             success: false,
             message: "Registration closed for this event"
@@ -150,8 +150,10 @@ const registerEvent = async (req, res) => {
     }
 
     const registeredEvents = await services.getRegisteredEvents(req.user)
-    for(let event in registeredEvents) {
-        if(toString(event._id) == toString(id)) {
+    console.log(registeredEvents)
+    console.log(req.user)
+    for (let event in registeredEvents) {
+        if (toString(event._id) == toString(id)) {
             return res.status(400).json({
                 success: false,
                 message: "Already registered for this event"
@@ -160,8 +162,8 @@ const registerEvent = async (req, res) => {
     }
 
     const session = await paymentServices.paymentSession({
-        event, 
-        user: req.user, 
+        event,
+        user: req.user,
         price_id: "price_1LwNFQSCUt1T7dp659pVlZyr"
     })
 

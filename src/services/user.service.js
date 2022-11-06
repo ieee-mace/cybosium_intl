@@ -7,7 +7,7 @@ const generateToken = (user) => {
         id: user._id,
         email: user.email
     }
-    return jwt.sign(payload, "some_secret_key")
+    return jwt.sign(payload, process.env.PASSPORT_SECRET_KEY)
 }
 
 const getUserByLoginCredentials = async ({ email, password }) => {
@@ -22,7 +22,7 @@ const getUserById = async (id) => {
     return await userModel.findById(id)
 }
 
-const createUser = async ({firstname, lastname, email, password}) => {
+const createUser = async ({ firstname, lastname, email, password }) => {
     return await userModel.create({ firstname, lastname, email, password })
 }
 

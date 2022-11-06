@@ -3,7 +3,7 @@ const eventModel = require("../models/event.model")
 const registrationModel = require("../models/registration.model");
 
 
-const createEvent = async ({name, description, price, date, registration_open, mode, created_by}) => {
+const createEvent = async ({ name, description, price, date, registration_open, mode, created_by }) => {
     const event = new eventModel({
         name,
         description,
@@ -30,7 +30,7 @@ const getAllEventsWithRegistrationStatus = async (user) => {
     // console.log("@@@@@@@@@@@@@")
     // console.log(user)
     const registeredEvents = await getRegisteredEvents(user)
-    // console.log("@@@@@", registeredEvents)
+    console.log("@@@@@", registeredEvents)
     const data = events.map(event => {
         const registered = registeredEvents.find(regEvent => regEvent._id.toString() === event._id.toString())
         return {
@@ -41,13 +41,13 @@ const getAllEventsWithRegistrationStatus = async (user) => {
     return data
 }
 
-const updateEvent = async ({id, data}) => {
+const updateEvent = async ({ id, data }) => {
     const allowedFields = ["name", "description", "price", "date", "registration_open", "mode"]
-    
+
     const event = await getEventById(id)
 
-    for(let key in data) {
-        if(!allowedFields.includes(key)) {
+    for (let key in data) {
+        if (!allowedFields.includes(key)) {
             return null
         }
         event[key] = data[key]
@@ -60,7 +60,7 @@ const deleteEvent = async (id) => {
     return await eventModel.deleteOne({ _id: id })
 }
 
-const registerEvent = async ({event, user, payment}) => {
+const registerEvent = async ({ event, user, payment }) => {
     const registration = await registrationModel.create({
         event: event._id,
         user: user._id,

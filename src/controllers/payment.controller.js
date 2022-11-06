@@ -1,8 +1,8 @@
 const services = require('../services/payment.service')
 const eventServices = require('../services/event.service')
 
-const SECRET_KEY = "sk_test_51LwKpeSCUt1T7dp6nZyVQgO0IsQ1bwZZZ81toqSbq5PbDE2JiWOWCuZKTdYoUowdB4lHftLsjlIPWmpJvGOe69F800Z07TYJoh"
-const WEBHOOK_SECRET_KEY = "whsec_ip8nI7S3etaXW7bk8IHv3SYRNo44O6b1"
+const SECRET_KEY = process.env.STRIPE_SECRET_KEY
+const WEBHOOK_SECRET_KEY = process.env.WEBHOOK_SECRET_KEY
 
 const stripe = require('stripe')(SECRET_KEY)
 
@@ -25,11 +25,11 @@ const successfulPaymentWebHook = async (req, res) => {
     try {
         // console.log({body: req.body, sig})
         stripeEvent = stripe.webhooks.constructEvent(req.body, sig, WEBHOOK_SECRET_KEY);
-    } catch(err) {
+    } catch (err) {
         console.log(`❌ Error message: ${err.message}`);
         return res.status(400).send(`Webhook Error: ${err.message}`);
     }
-    
+
     if (stripeEvent.type === 'checkout.session.completed') {
         const session = stripeEvent.data.object;
         const payment = await fulfillOrder(session);
@@ -41,8 +41,8 @@ const successfulPaymentWebHook = async (req, res) => {
 
 
 const createCheckoutSession = async (req, res) => {
-    const session = await services.getCheckoutSession({ price_id: "price_1LwNFQSCUt1T7dp659pVlZyr" })
-    
+    const session = await services.getCheckoutSession({ price_id: process.env.STRIPE_PRICE_ID })
+
     // console.log("@@@@@@@@@@@@@@@@")
     // console.log(session)
     return res.status(200).json({
