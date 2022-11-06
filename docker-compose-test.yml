@@ -11,7 +11,7 @@ services:
     ports:
       - "5432:5432"
     volumes:
-        - postgres_data:/var/lib/postgresql/data/
+      - postgres_data:/var/lib/postgresql/data/
 
   web:
     container_name: aksc22_web
@@ -24,11 +24,11 @@ services:
       - static_volume:/code/staticfiles
       - media_volume:/code/mediafiles
     ports:
-        - "8000:8000"
+      - "8000:8000"
     depends_on:
-        - db
+      - db
     env_file:
-        - .env
+      - .env
     restart: unless-stopped
 
   nginx:
@@ -54,13 +54,13 @@ services:
   certbot:
     container_name: aksc22_certbot
     image: certbot/certbot:latest
-    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"`
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
     volumes:
       - ./data/certbot/conf:/etc/letsencrypt
       - ./data/certbot/letsencrypt/lib:/var/lib/letsencrypt
       - ./data/certbot/www:/var/www/certbot
 
 volumes:
-    postgres_data:
-    static_volume:
-    media_volume:
+  postgres_data:
+  static_volume:
+  media_volume:
