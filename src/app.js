@@ -2,6 +2,7 @@ const express = require("express")
 const bodyParser = require('body-parser')
 const passport = require('passport')
 const cors = require('cors')
+const morgan = require('morgan')
 
 const app = express()
 
@@ -14,11 +15,13 @@ app.use((req, res, next) => {
         bodyParser.json()(req, res, next);
     }
 });
+app.use(morgan('tiny'))
 
 require('dotenv').config()
 
 app.use(passport.initialize())
 require("./config/passport.config")
+
 
 // ROUTES
 app.use("/api/users", require("./routes/user.router"))
