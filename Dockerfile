@@ -10,4 +10,4 @@ COPY . .
 
 # EXPOSE 8000
 
-CMD ["yarn", "run", "develop"]
+CMD ["yarn", "run", "start"]
