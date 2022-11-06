@@ -2,14 +2,15 @@ version: '3'
 
 services:
   web:
-    container_name: cybosium
+    container_name: cybosium_web
     restart: always
-    build: .
+    build:
+      context: .
     volumes:
       - "./:/usr/src/app"
       - "/usr/src/app/node_modules"
     ports:
-      - "7000:8000"
+      - "8000:8000"
     links:
       - mongo
 
@@ -18,3 +19,13 @@ services:
     image: mongo
     ports:
       - "27017:27017"
+
+  nginx:
+    build:
+      context: ./nginx
+    container_name: cybosium_nginx
+    hostname: cybosium_nginx
+    ports:
+      - "80:80"
+    depends_on:
+      - web
