@@ -32,6 +32,7 @@ services:
       - ./nginx/conf/:/etc/nginx/conf.d/:ro
       - ./certbot/www:/var/www/certbot/:ro
       - ./certbot/conf/:/etc/nginx/ssl/:ro
+      - ./certbot/letsencrypt/lib:/var/lib/letsencrypt
     depends_on:
       - web
 
@@ -42,3 +43,4 @@ services:
     volumes:
       - ./certbot/www/:/var/www/certbot/:rw
       - ./certbot/conf/:/etc/letsencrypt/:rw
+      - ./certbot/letsencrypt/lib:/var/lib/letsencrypt
