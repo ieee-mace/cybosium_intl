@@ -31,16 +31,15 @@ services:
     volumes:
       - ./nginx/conf/:/etc/nginx/conf.d/:ro
       - ./certbot/www:/var/www/certbot/:ro
-      - ./certbot/conf/:/etc/nginx/ssl/:ro
-      - ./certbot/letsencrypt/lib:/var/lib/letsencrypt
+      # - ./certbot/conf/:/etc/nginx/ssl/:ro
+      # - ./certbot/letsencrypt/lib:/var/lib/letsencrypt
     depends_on:
       - web
-
-  certbot:
-    image: certbot/certbot:arm32v6-latest
-    container_name: cybosium_certbot
-    command: certonly --webroot -w /var/www/certbot --force-renewal --email roshanrajeev2001@gmail.com -d api-cybosium.ieeemace.org --agree-tos
-    volumes:
-      - ./certbot/www/:/var/www/certbot/:rw
-      - ./certbot/conf/:/etc/letsencrypt/:rw
-      - ./certbot/letsencrypt/lib:/var/lib/letsencrypt
+  # certbot:
+  #   image: certbot/certbot:arm32v6-latest
+  #   container_name: cybosium_certbot
+  #   command: certonly --webroot -w /var/www/certbot --force-renewal --email roshanrajeev2001@gmail.com -d api-cybosium.ieeemace.org --agree-tos
+  #   volumes:
+  #     - ./certbot/www/:/var/www/certbot/:rw
+  #     - ./certbot/conf/:/etc/letsencrypt/:rw
+  #     - ./certbot/letsencrypt/lib:/var/lib/letsencrypt
