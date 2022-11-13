@@ -1,8 +1,7 @@
 const isAdmin = () => {
     return (req, res, next) => {
         console.log("is admin middleware")
-        console.log(req.user)
-        if (req.user.is_admin === 'admin') {
+        if (req.user.is_admin === true) {
             next();
         } else {
             res.status(401).json({
